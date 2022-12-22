@@ -44,10 +44,9 @@ def encode_text_and_labels(df):
     onehot_encoded = to_categorical(integer_encoded)
     return padded_docs, onehot_encoded, vocab_size, max_length
 
-
 def load_and_preprocess_data(path):
     """
-    Load the data and preprocess it
+    Load the data and preprocess it, expect runtime of 20 seconds.
     :param path: path to the data
     :return: preprocessed data in the form of a pandas dataframe. The first item returned is the data,
     the second is the labels, the third is the vocabulary size, and the fourth is the maximum length of a sequence
