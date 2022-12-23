@@ -44,14 +44,17 @@ def encode_text_and_labels(df):
     onehot_encoded = to_categorical(integer_encoded)
     return padded_docs, onehot_encoded, vocab_size, max_length
 
-def load_and_preprocess_data(path):
+def load_and_preprocess_data(path, in_colab=False):
     """
     Load the data and preprocess it, expect runtime of 20 seconds.
     :param path: path to the data
     :return: preprocessed data in the form of a pandas dataframe. The first item returned is the data,
     the second is the labels, the third is the vocabulary size, and the fourth is the maximum length of a sequence
     """
-    df = pd.read_csv('spotify_millsongdata.csv')
+    df = pd.read_csv(path)
+      
+    # remove artist with fewer than 30 songs
+    df = df.groupby('artist').filter(lambda x: len(x) > 100)
 
     df['text'] = df['text'].apply(preprocess)
 
