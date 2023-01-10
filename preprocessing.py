@@ -31,7 +31,7 @@ def encode_text_and_labels(df):
     t.fit_on_texts(df['text'])
     # keep only words that appear more than min_df times
     # keep only words that appear more than min_df times
-    word_docs = {word: freq for word, freq in t.word_docs.items() if freq > 1}
+    word_docs = {word: freq for word, freq in t.word_docs.items() if freq > 3}
 
     # create new tokenizer
     t_filtered = Tokenizer()
