@@ -27,12 +27,22 @@ def preprocess(text):
 
 
 def encode_text_and_labels(df):
-    # create a tokenizer
     t = Tokenizer()
     t.fit_on_texts(df['text'])
-    vocab_size = len(t.word_index) + 1
+    # keep only words that appear more than min_df times
+    # keep only words that appear more than min_df times
+    word_docs = {word: freq for word, freq in t.word_docs.items() if freq > 1}
+
+    # create new tokenizer
+    t_filtered = Tokenizer()
+
+    # fit t_filtered
+    t_filtered.word_index = {word: i + 1 for i, (word, freq) in enumerate(word_docs.items())}
+    t_filtered.word_counts = word_docs
+
+    vocab_size = len(t_filtered.word_index) + 1
     # integer encode the documents
-    encoded_docs = t.texts_to_sequences(df['text'])
+    encoded_docs = t_filtered.texts_to_sequences(df['text'])
     # pad documents to be as long as the longest sequence in the dataset
     max_length = df['text'].apply(lambda x: len(x.split(' '))).max()
     padded_docs = pad_sequences(encoded_docs, maxlen=max_length, padding='post')
