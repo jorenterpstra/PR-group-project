@@ -26,13 +26,13 @@ def preprocess(text):
     return text
 
 
-def encode_text_and_labels(df, min_occurrence=0):
+def encode_text_and_labels(df, min_word_freq=0):
     t = Tokenizer()
     t.fit_on_texts(df['text'])
 
-    if min_occurrence > 0:
+    if min_word_freq > 0:
         # keep only words that appear more than min_occurence times
-        word_docs = {word: freq for word, freq in t.word_docs.items() if freq > min_occurrence}
+        word_docs = {word: freq for word, freq in t.word_docs.items() if freq > min_word_freq}
 
         # create new tokenizer
         t_filtered = Tokenizer()
@@ -57,7 +57,7 @@ def encode_text_and_labels(df, min_occurrence=0):
     onehot_encoded = to_categorical(integer_encoded)
     return padded_docs, onehot_encoded, vocab_size, max_length
 
-def load_and_preprocess_data(path, in_colab=False):
+def load_and_preprocess_data(path, min_word_freq=0):
     """
     Load the data and preprocess it, expect runtime of 20 seconds.
     :param path: path to the data
@@ -78,4 +78,4 @@ def load_and_preprocess_data(path, in_colab=False):
     df = df[no_covers]
 
     # prepare text data for a recurrent network
-    return encode_text_and_labels(df)
+    return encode_text_and_labels(df, min_word_freq)
