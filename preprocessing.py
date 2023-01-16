@@ -26,19 +26,22 @@ def preprocess(text):
     return text
 
 
-def encode_text_and_labels(df):
+def encode_text_and_labels(df, min_occurrence=0):
     t = Tokenizer()
     t.fit_on_texts(df['text'])
-    # keep only words that appear more than min_df times
-    # keep only words that appear more than min_df times
-    word_docs = {word: freq for word, freq in t.word_docs.items() if freq > 3}
 
-    # create new tokenizer
-    t_filtered = Tokenizer()
+    if min_occurrence > 0:
+        # keep only words that appear more than min_occurence times
+        word_docs = {word: freq for word, freq in t.word_docs.items() if freq > min_occurrence}
 
-    # fit t_filtered
-    t_filtered.word_index = {word: i + 1 for i, (word, freq) in enumerate(word_docs.items())}
-    t_filtered.word_counts = word_docs
+        # create new tokenizer
+        t_filtered = Tokenizer()
+
+        # fit t_filtered
+        t_filtered.word_index = {word: i + 1 for i, (word, freq) in enumerate(word_docs.items())}
+        t_filtered.word_counts = word_docs
+    else:
+        t_filtered = t
 
     vocab_size = len(t_filtered.word_index) + 1
     # integer encode the documents
